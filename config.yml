@@ -1,0 +1,980 @@
+## This is a personal config for PMM. You can edit this file to your needs and be sure to fill in your personal keys 
+## Overlays included for Movies in 4K, 1080p. Collections include IMDB, IMAX, DV, MCU, Star Wars. Star Trek, Harry Potter
+## Overlays included for TV Shows in 4K. Collections inlude IMDB, Main Streaming Platforms and Major Networks, Flixpatrol Top 10, Actors Birthdays and others
+##### Check your LIBRARY names in plex and copy them to the library names below. If your LIBRARY names are anything other than "Movies" and "TV Shows", change the names to match
+##### ie. change the "Movies" to your movie library name and change "TV Shows" to your tv library name
+## Fill in your plex IP under Settings Category along with plex token
+## This version includes Notifiarr settings and webhook 
+## TMDB and mdblist accounts are required for this scrypt to work. Fill in your apikeys where there are XXXXXXXXXXXXXXXXXXX
+##
+
+
+libraries:                       # This is called out once within the config.yml file
+  All - Films - No CAMS:  ################# THIS IS THE NAME OF YOUR "MOVIE" LIBRARY IN PLEX. IF YOUR MOVIE LIBRARY IS NAMED DIFFERENTLY THEN COPY THAT NAME HERE.
+    report_path: config/missing/All - Films - No CAMS.yml # Report file generated for each library
+    collection_files:
+    - folder: config/Movies #### This pulls the ".yml" files in this folder and makes a custom Collections  
+    - pmm: actor            #### Set for Actors with Birthdays on the day. Can be copied and add to TV/ANIME section!
+      schedule: hourly(06)  #### I have PMM set to run twice a day @06 and 12
+      template_variables:
+        use_separator: true
+        sep_style: stb
+        collection_section: '025'
+        style: signature
+        name_format: 🎂 <<key_name>>'s Birthday
+        translation_key: birthday
+        sort_by: audience_rating.desc
+        title_format: <<key_name>>'s Birthday
+        summary_format: Celebrate actor <<key_name>>'s Birthday with some of their Movies! #
+        data:
+          depth: 10
+          limit: 10000
+        tmdb_birthday:
+          this_month: false
+          before: 0
+          after: 0
+    - pmm: basic                 # Creates Collections for New Episodes from last 7 days and Newly Released from past 90 days
+    - pmm: imdb                  # Creates IMDB Collections for Popular and Top 250
+      template_variables:
+        use_lowest: false
+        visible_home_top: true      #run once to create list to show when on the home screen, This is optional and can be turned off in Plex settings > Manage > Libaries > Manage Recommendations
+        visible_shared_top: false
+        visible_home_popular: true      #run once to create list in home settings
+        visible_shared_popular: true    # Shows list on shared users home screens
+    - pmm: seasonal           # Other Holidays in the wiki
+      schedule: monthly(1)
+      template_variables:  
+        use_separator: true
+        sep_style: stb
+        sync_mode: append
+        schedule: daily
+        visible_home_years: range(12/01-01/03)
+        visible_home_christmas: range(12/01-01/03)
+        visible_home_valentine: range(02/01-02/16)
+        visible_home_easter: false
+        visible_home_halloween: range(10/01-11/01)
+        visible_shared_years: range(12/01-01/03)
+        visible_shared_christmas: range(12/01-01/03)
+        visible_shared_valentine: range(02/01-02/16)
+        visible_shared_easter: false
+        visible_shared_halloween: range(10/01-11/01)
+        include:
+        - years
+        - valentine
+        - halloween
+        - christmas
+        - easter
+        sort_by: random    # Changes order of movies everytime clicked on collection
+    - pmm: decade          # Top 100 Moives of the decades ## ordered by critical reception
+      schedule: monthly(2)
+      template_variables:
+        use_separator: true
+        sep_style: stb
+    - pmm: studio          # Collection for Studios. Other studios in the wiki
+      schedule: monthly(3)
+      template_variables:
+        use_separator: true
+        sep_style: stb
+        include:
+        - 20th Century Animation
+        - 20th Century Studios
+        - 20th Century Fox Televison
+        - A24
+        - Fox Televison Studios
+        - Blumhouse Productions
+        - DC Comics
+        - DreamWorks Pictures
+        - DreamWorks Studios
+        - Hallmark
+        - Illumination Entertainment
+        - Ledgendary Pictures
+        - Lionsgate
+        - Metro-Goldwyn-Mayer
+        - New Line Cinema
+        - Pixar
+        - Sony Pictures Animation
+        - Sony Pictures
+        - Universal Pictures
+        - Universal Animation Studios
+        - Universal Televison
+        - Warner Bros. Pictures
+        - Warner Bros. Televison
+        - Warner Premiere
+        - Warner Animation Group
+        addons:                            # Groups similar named studios under one collection
+          20th Century Studios:
+          - 20th Century
+          - 20th Century Fox Televison
+          - 20th Century Fox
+          DC Comics:
+          - DC Films
+          - DC Entertainment
+          Dreamworks Studios:
+          - DreamWorks
+          - DreamWorks Animation
+          - DreamWorks Animation Television
+          - DreamWorks Classics
+          Hallmark:
+          - Hallmark Channel
+          - Hallmark Entertainment
+          - Hallmark Media
+          - Hallmark Movies & Mysteries
+          - The Hallmark Channel
+          Illumination Entertainment:
+          - Illumination Films
+          - Illumination
+          Ledgendary Pictures:
+          - Ledgendary Television
+          Metro-Goldwyn-Mayer:
+          - MGM
+          New Line Cinema:
+          - New Line
+          Pixar:
+          - Pixar Animation Studios
+          Sony Pictures:
+          - Sony
+          - Sony Pictures Television Studios
+          - Sony Pictures Animation
+          Universal Pictures:
+          - Universal
+          Warner Animation Group:
+          - Warner Bros. Cartoon Studios
+          - Warner Animation
+          Warner Bros. Pictures:
+          - Warner
+          - Warner Animation Group
+        sort_by: title.asc
+    - pmm: country             # Movies Filmed in these countries
+      schedule: monthly(4)
+      template_variables:
+        use_separator: true
+        sep_style: stb
+        style: color
+        include:
+        - Jamaica
+        - China
+        - Hong Kong
+    - pmm: content_rating_uk  # Collections based on UK Ratings
+      schedule: hourly(06)
+      template_variables:
+        use_separator: true
+        sep_style: stb
+        visible_home: false
+        visible_shared: false
+        include:
+        - U
+        - PG
+        - 12
+        - 12A
+        - 15
+        - 18
+        - R18
+        addons:   # Groups US and other ratings under Uk ratings
+          U:
+          - gb/U
+          - gb/0+
+          - G
+          - TV-Y
+          - TV-G
+          - E
+          - gb/E
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - '01'
+          - '02'
+          - '03'
+          - '04'
+          - '05'
+          - '06'
+          - G - All Ages
+          PG:
+          - gb/PG
+          - gb/9+
+          - TV-PG
+          - TV-Y7
+          - TV-Y7-FV
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - '07'
+          - '08'
+          - '09'
+          - PG - Children
+          12:
+          - gb/12
+          - PG-13 - Teens 13 or older
+          12A:
+          - gb/12A
+          - 12+
+          - PG-13
+          - TV-13
+          - 12
+          - PG-13 - Teens 13 or older
+          15:
+          - gb/15
+          - gb/14+
+          - TV-14
+          - 13
+          - 14
+          - PG-13 - Teens 13 or older
+          18:
+          - gb/18
+          - MA-17
+          - TVMA
+          - TV-MA
+          - R
+          - 16
+          - 17
+          - R - 17+ (violence & profanity)
+          - R+ - Mild Nudity
+          R18:
+          - gb/R18
+          - gb/X
+          - X
+          - NC-17
+          - Rx - Hentai
+    - pmm: based                # Collections based on Books, Comics, True Story and Video Games
+      schedule: monthly(5)
+      template_variables:
+        use_separator: true
+        sep_style: stb
+        sync_mode: append
+    - pmm: region              # same as country but regions
+      schedule: monthly(4)
+      template_variables:
+        use_separator: true
+        style: color
+        sep_style: stb
+        exclude:
+        - Northern Africa
+        - Eastern Africa
+        - Central Africa
+        - Southern Africa
+        - Western Africa
+        - Antarctica
+        - Eastern Europe
+        - Polynesia
+        - Micronesia
+        - Melanesia
+        - Australia and New Zealand
+        - Northern Europe
+        - Southern Asia
+        - Central Asia
+        - Western Asia
+        - North America
+        - South America
+        - South-Eastern Asia
+    - pmm: streaming       # UK streaming services
+      schedule: weekly(sunday|wednesday)    # Will update on sundays and wendesdays
+      template_variables:
+        use_separator: true
+        sep_style: stb
+        sync_mode: append   # Default is sync which adds and removes I use append is which only add
+        region: uk
+        #originals_only: true  #only show the streaming service's original content
+        include:
+        - appletv
+        - all4
+        - britbox
+        - discovery
+        - disney
+        - hayu
+        - netflix
+        - now
+        - amazon
+        sort_by: title.asc
+    - pmm: streaming      # US streaming services
+      schedule: weekly(sunday|wednesday)
+      template_variables:
+        sync_mode: append
+        region: us
+        include:
+        - bet
+        - crunchyroll
+        - max
+        - hulu
+        - peacock
+        - paramount
+        - showtime
+        sort_by: title.asc
+    - pmm: streaming      # Canada Streaming
+      schedule: weekly(sunday|wednesday)
+      template_variables:
+        sync_mode: append
+        region: ca
+        include:
+        - crave
+        sort_by: title.asc
+    - pmm: separator_chart   # Chart separator
+      template_variables:
+        sep_style: stb
+    - pmm: flixpatrol         # TOP 10 FOR THE DAY UK
+      template_variables:
+        location: united_kingdom
+        include:
+        - netflix
+        - prime
+        - paramount
+        use_separator: true
+        sep_style: stb
+        time_window: today
+        sync_mode: sync
+        visible_home: true
+        visible_shared: true
+        collection_order: custom
+    - pmm: flixpatrol         # TOP 10 FOR THE DAY WORLDWIDE
+      template_variables:
+        exclude:
+        - netflix
+        - prime
+        - paramount
+        use_separator: true
+        sep_style: stb
+        time_window: today
+        sync_mode: sync
+        visible_home: true
+        visible_shared: true
+        collection_order: custom
+    - pmm: universe
+      schedule: monthly(6)
+      template_variables:
+        use_separator: true
+        append_data:     # this adds custom lists imdb, trakt, or mdb
+          mcu2: Marvel Chronological Order   # name of custom collection
+        imdb_list_mcu2: https://www.imdb.com/list/ls029032797/   # link to list
+        url_poster_mcu2: https://raw.githubusercontent.com/meisnate12/Plex-Meta-Manager-Images/master/universe/mcu.jpg # poster url (Wanted MCU but custom order, still use default assests from PMM) 
+        include:
+        - avp     #Alien / Predator
+        #- arrow   #Arrowverse
+        - dca     #DC Animated Universe
+        - dcu     #DC Extended Universe
+        - fast    #Fast & Furious
+        - marvel  #In Association With Marvel
+        - mcu     #Marvel Cinematic Universe
+        - middle  #Middle Earth
+        - mummy   #The Mummy Universe
+        - rocky   #Rocky / Creed
+        - trek   #Star Trek
+        - star   #Star Wars Universe
+        - askew   #View Askewniverse
+        - wizard #Wizarding World
+        - xmen    #X-Men Universe
+        visible_home_mcu2: false  #This will show a collection on home screen in Plex, this case its Marvel Cronological Order
+    schedule_overlays: hourly(12-14)
+    overlay_files:
+    #- reset_overlays: plex      # reset overlays to plex or tmdb
+    #- remove_overlays: false     # Set this to true to remove all overlays
+    - pmm: ribbon                # adds ribbon to bottom right of poster see wiki for ribbon types
+    - pmm: mediastinger          # adds yelllow S on poster for mid/after credits scence
+    - pmm: audio_codec
+      template_variables:           # Audio overlays, Set the value to "true" if you want these formats on or add #infront
+        horizontal_align: left
+        vertical_align: bottom
+        style: standard
+        use_truehd_atmos: false
+        use_dtsx: false
+        use_plus_atmos: false
+        use_dolby_atmos: false
+        use_truehd: false
+        use_ma: false
+        use_flac: false
+        use_pcm: false
+        use_hra: false
+        #use_plus:
+        use_dtses: false
+        use_dts: false
+        #use_digital:
+        #use_aac:
+        #use_mp3:
+        #use_opus:        
+    - pmm: resolution       # Resolution overlays, Set the value to "true" if you want these formats on or add #infront
+      template_variables:
+        use_4k: false
+        use_1080p_dvhdr: false
+        use_1080p_plus: false
+        use_1080p_dv: false
+        use_720p_dvhdr: false
+        use_720p_plus: false
+        use_720p_dv: false
+        #use_720p_hdr: false
+        use_576p_dvhdr: false
+        use_576p_plus: false
+        use_576p_dv: false
+        use_576p_hdr: false
+        use_480p_dvhdr: false
+        use_480p_plus: false
+        use_480p_dv: false
+        use_480p_hdr: false
+        use_dvhdr: false
+        use_plus: false
+        use_dv: false
+        use_anniversary: false
+        use_collector: false
+        use_diamond: false
+        use_platinum: false
+        use_directors: false
+        use_final: false
+        use_international: false
+        use_theatrical: false
+        use_ultimate: false
+        use_coda: false
+        use_imax: false
+        use_criterion: false
+        use_richarddonner: false
+        use_blackchrome: false
+        use_defomotove: false
+        use_ulysses: false
+    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+      template_variables:
+        rating1: critic
+        rating1_image: rt_tomato
+        rating1_font: config/overlays/fonts/Adlib.ttf
+        rating1_font_size: 63
+
+        rating2: user
+        rating2_image: imdb
+        rating2_font: config/overlays/fonts/Impact.ttf
+        rating2_font_size: 70
+
+        rating3: audience
+        rating3_image: tmdb
+        rating3_font: config/overlays/fonts/Avenir_95_Black.ttf
+        rating3_font_size: 70
+
+        horizontal_position: right
+    operations:
+      schedule: hourly(12-14)
+      #delete_collections:      ##### IF YOUR COLLECTIONS SHOW DUPLICATES OR YOU USED MY PREVIOUS CONFIGS RUN THIS ONCE AND THEN DISABLE FOR A FRESH COLLECTION START.
+        #configured: false      ##### DO NOT MANUALLY DELETE THE COLLECTIONS BECAUSE THE "TAGS" PMM ASSIGNS WILL STILL BE ATTACHED TO YOUR SHOWS
+        #managed: true
+      #mass_poster_update: plex                   #  Resets posters to tmdb or plex
+      mass_user_rating_update: mdb_imdb           #  This operation will update the user rating in plex with imdb ratings information gathered through mdblist.com (mdblist config required)
+      mass_critic_rating_update: mdb_tomatoes     #  This operation will update the critic rating in plex with rotten tomatoes ratings information
+      mass_audience_rating_update: mdb_tmdb       #  This operation will update the audience rating in plex with TMDb ratings information
+
+  Films - 4K:  ################# THIS IS THE NAME OF YOUR "MOVIE" LIBRARY IN PLEX. IF YOUR MOVIE LIBRARY IS NAMED DIFFERENTLY THEN COPY THAT NAME HERE.
+    schedule: monthly(1)
+    report_path: config/missing/Films - 4K.yml
+    collection_files:
+    - pmm: universe
+      template_variables:
+        use_separator: false
+        append_data:     # this adds custom lists imdb, trakt, or mdb
+          mcu2: Marvel Chronological Order   # name of custom collection
+        imdb_list_mcu2: https://www.imdb.com/list/ls029032797/   # link to list
+        url_poster_mcu2: https://raw.githubusercontent.com/meisnate12/Plex-Meta-Manager-Images/master/universe/mcu.jpg # poster url (Wanted MCU but custom order, still use default assests from PMM) 
+        exclude:
+        - avp     #Alien / Predator
+        - arrow   #Arrowverse
+        - dca     #DC Animated Universe
+        - dcu     #DC Extended Universe
+        - fast    #Fast & Furious
+        - marvel  #In Association With Marvel
+        - mcu     #Marvel Cinematic Universe
+        - middle  #Middle Earth
+        - mummy   #The Mummy Universe
+        - rocky   #Rocky / Creed
+        - trek   #Star Trek
+        - star   #Star Wars Universe
+        - askew   #View Askewniverse
+        - wizard #Wizarding World
+        - xmen    #X-Men Universe
+        visible_home_mcu2: true  #This will show a collection on home screen in Plex, this case its Marvel Cronological Order
+    - file: config/Movie Collections.yml #This pulls the "Movie Collections.yml" file and makes a custom Collections
+    schedule_overlays: hourly(12-14)
+    overlay_files:
+    #- reset_overlays: plex      # reset overlays to plex or tmdb
+    #- remove_overlays: false     # Set this to true to remove all overlays
+    - pmm: ribbon
+    - pmm: mediastinger
+    - pmm: audio_codec
+      template_variables:
+        horizontal_align: left
+        vertical_align: bottom
+        style: standard
+        #use_truehd_atmos
+        use_dtsx: false
+        #use_plus_atmos
+        #use_dolby_atmos
+        #use_truehd
+        #use_ma
+        use_flac: false
+        use_pcm: false
+        use_hra: false
+        #use_plus
+        use_dtses: false
+        #use_dts
+        #use_digital
+        #use_aac
+        use_mp3: false
+        use_opus: false
+    - pmm: resolution
+      template_variables:
+        use_1080p: false
+        use_720p: false
+        use_576p: false
+        use_480p: false
+        use_extended: false
+        use_special: false
+        use_uncut: false
+        use_anniversary: false
+        use_collector: false
+        use_diamond: false
+        use_platinum: false
+        use_directors: false
+        use_final: false
+        use_international: false
+        use_theatrical: false
+        use_ultimate: false
+        use_alternate: false
+        use_coda: false
+        #use_imax: false
+        use_criterion: false
+        use_richarddonner: false
+        use_blackchrome: false
+        use_defomotove: false
+        use_ulysses: false
+    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+      template_variables:
+        rating1: critic
+        rating1_image: rt_tomato
+        rating1_font: config/overlays/fonts/Adlib.ttf
+        rating1_font_size: 63
+
+        rating2: user
+        rating2_image: imdb
+        rating2_font: config/overlays/fonts/Impact.ttf
+        rating2_font_size: 70
+
+        rating3: audience
+        rating3_image: tmdb
+        rating3_font: config/overlays/fonts/Avenir_95_Black.ttf
+        rating3_font_size: 70
+
+        horizontal_position: right
+    operations:
+      schedule: hourly(12-14)
+      #delete_collections:      ##### IF YOUR COLLECTIONS SHOW DUPLICATES OR YOU USED MY PREVIOUS CONFIGS RUN THIS ONCE AND THEN DISABLE FOR A FRESH COLLECTION START.
+        #configured: false      ##### DO NOT MANUALLY DELETE THE COLLECTIONS BECAUSE THE "TAGS" PMM ASSIGNS WILL STILL BE ATTACHED TO YOUR SHOWS
+        #managed: true
+      mass_poster_update: plex                   #  Resets posters to tmdb or plex
+      mass_user_rating_update: mdb_imdb           #  This operation will update the user rating in plex with imdb ratings information gathered through mdblist.com (mdblist config required)
+      mass_critic_rating_update: mdb_tomatoes     #  This operation will update the critic rating in plex with rotten tomatoes ratings information
+      mass_audience_rating_update: mdb_tmdb       #  This operation will update the audience rating in plex with TMDb ratings information
+
+  All - TV shows: ########################### THIS IS THE NAME OF YOUR "TV SHOW" LIBRARY IN PLEX. IF YOUR TV LIBRARY IS NAMED DIFFERENTLY THEN COPY THAT NAME HERE. 
+    report_path: config/missing/All - TV shows.yml
+    collection_files:
+    - folder: config/TVShows     # This pulls the ".yml" files in this folder and makes a custom Collections
+    - pmm: basic                 # Creates Collections for New Episodes from last 7 days and Newly Released from past 90 days
+    - pmm: imdb                  # Creates IMDB Collections for Popular and Top 250 
+      template_variables:
+        visible_home_top: true      #run once to create list to show when on the home screen, This is optional and can be turned off in Plex settings > Manage > Libaries > Manage Recommendations
+        visible_home_popular: true      #run once to create list in home settings
+    - pmm: separator_chart
+      template_variables:
+        sep_style: stb
+    - pmm: flixpatrol          ## TOP 10 FOR THE DAY UK
+      template_variables:
+        location: united_kingdom
+        include:
+        - netflix
+        - prime
+        - paramount
+        - disney
+        use_separator: true
+        sep_style: stb
+        time_window: today
+        sync_mode: sync
+        visible_home: true
+        visible_shared: true
+        collection_order: custom
+    - pmm: flixpatrol        ## TOP 10 FOR THE DAY WORLDWIDE
+      template_variables:
+        exclude:
+        - netflix
+        - prime
+        - paramount
+        - disney
+        use_separator: true
+        sep_style: stb
+        time_window: today
+        sync_mode: sync
+        visible_home: true
+        visible_shared: true
+        collection_order: custom
+    - pmm: network  # This will create collections for the following Networks. Check the Streaming list below to avoid duplicates like  Amazon, Netflix, NBC/Peacock etc
+      schedule: monthly(6)
+      template_variables:
+        use_separator: true
+        sync_mode: append
+        sep_style: stb
+          #name_format: <<key_name>> Shows   ## Example collection will be called A&E Shows, ABC Shows etc.
+        include:    #Remove # infront of lines below to add network to Collections
+        - A&E
+        - ABC
+        - AMC
+        - Animal Planet
+        - BBC One
+        - BBC Two
+        - BBC Three
+        - BBC iPlayer
+        - BET
+        - Cartoon Network
+        - Channel 4
+        - Channel 5
+        - CBC
+        - CBS
+        - Comedy Central
+        - Dave
+        - Discovery
+        - Disney Channel
+        - E!
+        - ESPN
+        - Food Network
+        - FOX
+        - Fox Kids
+        - Freevee
+        - Game Show Network
+        - Hallmark
+        - HBO
+        - HGTV
+        - History
+        - ITV1
+        - ITV
+        - ITVX
+        - Lifetime
+        - MTV
+        - National Geographic
+        - NBC
+        - Nickelodeon
+        - Paramount Network
+        - PBS
+        - Showtime
+        - Sky
+        - Starz
+        - TBS
+        - The CW
+        - TLC
+        - TNT
+        - UKTV
+        - USA
+        #- YouTube
+            ####STREAMING NETWORKS####
+        #- Apple TV+
+        #- amazon
+        #- prime
+        #- discovery+
+        #- Disney+
+        - HBO Max
+        - Hulu
+        #- Netflix
+        - Paramount+
+        #- Peacock
+        #- Starz
+        addons:    #these addons bundle additional network Collections under a main collection . ex. the show "Yellowstone" is catatgorized under Paramount Network not Paramount+. this will bundle the Paramount Network collection under Paramount+ to avoid duplicates or collection with only one show. 
+          Paramount+:       #main network
+          - Paramount Network          #network you want bundle under the Paramoun+ collection
+          Disney_Channel:
+          - Toon Disney
+          - Playhouse Disney
+          - Disney Channel Asia
+          - disney.com
+          - Disney Channel Middle East
+          Freevee:
+          - Amazon Freevee
+          Peacock:
+          - NBC
+          HBO Max:    #fixes all the HBO MAX vs HBO vs HBO+ collection issues. just 1 HBO Collection
+          - HBO
+          - HBO Go
+          Hallmark:
+          - Hallmark Channel
+          - Hallmark Drama
+          - Hallmark Movie & Mysteries
+          - Hallmark Movies Now
+          Lifetime:
+          - Lifetime Movies
+          Sky:
+          - Sky One
+          - Sky Atlantic
+          - Sky Arts
+          - Sky History
+          - Sky Living
+          - Sky Crime
+          - Sky Uno
+          - Sky Max
+          - Sky Sports
+          - Sky Documentaries
+          - Sky Nature
+          - Sky News
+          - Sky Cinema
+          - Sky News Australia
+          - Sky Italia
+          - Sky Comedy
+          - Sky Sports F1
+          - Sky Two
+          - Sky Witness
+          - sky Travel
+          - Sky Vision
+          - Sky News Weather Channel
+          - SkyShowtime
+        sort_by: title.asc
+    - pmm: streaming # This will create collections for the following streaming services.
+      schedule: weekly(sunday|wednesday)
+      template_variables:
+          #collection_section: "050"  #this setting will bundle the streaming collections with "-pmm networks". left disabled, streaming services will appear before networks and everything will be listed alphabetically. default value is "030"  
+        use_separator: true
+        sep_style: stb
+        sync_mode: append
+        name_format: <<key_name>>  #renames the collections for each streaming service to keep the title format for all collections the same. "Apple TV+ Shows" is renamed to "Apple TV+"  
+        #originals_only: true  #only show the streaming service's original content
+        region: uk
+        include:
+        - appletv
+        - all4
+        - britbox
+        - disney
+        - netflix
+        - now
+        - amazon
+        - hayu
+        sort_by: title.asc
+    - pmm: streaming
+      schedule: weekly(sunday|wednesday)
+      template_variables:
+        sync_mode: append
+        region: ca
+        include:
+        - crave
+        sort_by: title.asc
+    - pmm: streaming
+      schedule: weekly(sunday|wednesday)
+      template_variables:
+        sync_mode: append
+        region: us
+        include:
+        #- bet
+        #- max
+        #- hulu
+        #- peacock
+        - discovery
+        - crunchyroll
+        sort_by: title.asc
+    schedule_overlays: hourly(12-14)
+    overlay_files:
+    #- reset_overlays: plex      #reset overlays to plex or tmdb
+    - remove_overlays: false     # Set this to true to remove all overlays
+    - pmm: mediastinger
+    - pmm: ribbon
+    - pmm: status                # Adds airing (if an episode has aired in last 14 days), Cancelled, Ended and Returning to top of show poster
+      template_variables:
+        horizontal_align: center
+        vertical_align: top
+        vertical_offset: 0
+        horizontal_offset: 0
+        back_height: 85
+        back_width: 1100
+        font: config/overlays/fonts/Avenir_95_Black.ttf
+        font_size: 60
+        back_color_airing: '#016920'
+        back_color_returning: '#81007F'
+        back_color_canceled: '#ed1f1f'
+        back_color_ended: '#000847'
+    - pmm: resolution    # Resolution overlays at shows level, Set the value to "true" if you want these formats on
+      template_variables:
+        #use_4k_dv: false
+        use_4k_dvhdr: false
+        use_4k_plus: false
+        use_4k_dv: false
+        use_1080p_dvhdr: false
+        use_1080p_plus: false
+        use_1080p_dv: false
+        use_720p_dvhdr: false
+        use_720p_plus: false
+        use_720p_dv: false
+        use_720p_hdr: false
+        use_576p_dvhdr: false
+        use_576p_plus: false
+        use_576p_dv: false
+        use_576p_hdr: false
+        use_480p_dvhdr: false
+        use_480p_plus: false
+        use_480p_dv: false
+        use_480p_hdr: false
+        use_dvhdr: false
+        use_plus: false
+        #use_dv: false
+    #- pmm: resolution # Resolution overlays at episode level, Set the value to "true" if you want these formats on
+      #template_variables:
+        #builder_level: episode
+    - pmm: audio_codec # Audio codec overlays at shows level, Set the value to "true" if you want these formats on. I recommend these setting to avoid too much clutter. 
+      template_variables:
+        vertical_align: bottom
+        horizontal_align: left
+        style: standard
+        use_truehd_atmos: false
+        use_dtsx: false
+        use_plus_atmos: false
+        use_truehd: false
+        use_ma: false
+        use_flac: false
+        use_pcm: false
+        use_hra: false
+        use_dtses: false
+        use_dts: false
+        use_opus: false
+    #- pmm: audio_codec # Audio codec overlays at episode level, Set the value to "true" if you want these formats on
+      #template_variables:
+          #builder_level: episode
+          #vertical_align: bottom 
+          #style: standard 
+    - pmm: ratings         # Ratings overlays for TV Shows with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format.
+      template_variables:
+        rating1: critic
+        rating1_image: rt_tomato
+        rating1_font: config/overlays/fonts/Adlib.ttf
+        rating1_font_size: 63
+
+        rating2: user
+        rating2_image: imdb
+        rating2_font: config/overlays/fonts/Impact.ttf
+        rating2_font_size: 70
+
+        rating3: audience
+        rating3_image: tmdb
+        rating3_font: config/overlays/fonts/Avenir_95_Black.ttf
+        rating3_font_size: 70
+
+        horizontal_position: right
+    #- pmm: ratings                                  # Ratings overlays for individual episodes of TV Shows
+      #template_variables:
+        #builder_level: episode      
+        #rating1: critic
+        #rating1_image: imdb
+        #rating1_font: config/overlays/fonts/Impact.ttf
+        #rating1_font_size: 70
+
+        #rating2: audience
+        #rating2_image: tmdb
+        #rating2_font: config/overlays/fonts/Avenir_95_Black.ttf
+        #rating2_font_size: 70
+
+        #horizontal_position: right
+    operations:
+      schedule: hourly(12-14)
+      #delete_collections:      ##### IF YOUR COLLECTIONS SHOW DUPLICATES OR YOU USED MY PREVIOUS CONFIGS RUN THIS ONCE AND THEN DISABLE FOR A FRESH COLLECTION START.
+        #configured: false      ##### DO NOT MANUALLY DELETE THE COLLECTIONS BECAUSE THE "TAGS" PMM ASSIGNS WILL STILL BE ATTACHED TO YOUR SHOWS
+        #managed: true
+      #mass_poster_update: plex                       #resets posters to tmdb or plex
+      mass_user_rating_update: mdb_imdb                  #  This operation will update the user rating in plex with imdb ratings information gathered through mdblist.com (mdblist config required)
+      mass_critic_rating_update: mdb_tomatoes            #  This operation will update the critic rating in plex with rotten tomatoes ratings information
+      mass_audience_rating_update: mdb_tmdb              #  This operation will update the audience rating in plex with TMDb ratings information     
+      #mass_episode_critic_rating_update: mdb_imdb       # Update critic ratings with imdb for episodes not needed for tautilli
+      #mass_episode_audience_rating_update: mdb_tmdb     # Update audience ratings with tmdb for episodes not needed for tautulli  
+playlist_files:
+- pmm: playlist                                        # change to true to use I've only need to use them once but when new content for MCU or Star wars get added i change to True
+  template_variables:
+    schedule: monthly(28)
+    libraries: All - Films - No CAMS, All - TV shows  # change these to the names of your libraries 
+    use_pokemon: false
+    use_dragonball: false
+    use_xmen: false
+    use_startrek: false
+    use_clonewars: false
+    use_arrow: false
+    use_dcau: false
+    use_mcu: false
+    use_starwars: false
+settings:
+  cache: true
+  cache_expiration: 60
+  asset_directory: config/assets
+  asset_folders: false
+  asset_depth: 0
+  create_asset_folders: false
+  prioritize_assets: false
+  dimensional_asset_rename: false
+  download_url_assets: false
+  show_missing_season_assets: false
+  show_missing_episode_assets: false
+  show_asset_not_needed: false
+  sync_mode: sync
+  minimum_items: 1
+  default_collection_order:
+  delete_below_minimum: true
+  delete_not_scheduled: false
+  run_again_delay: 2
+  missing_only_released: false
+  only_filter_missing: false
+  show_unmanaged: true
+  show_filtered: false
+  show_options: false
+  show_missing: true
+  show_missing_assets: true
+  save_report: true
+  report_path: true
+  tvdb_language: en
+  ignore_ids:
+  ignore_imdb_ids:
+  item_refresh_delay: 0
+  playlist_sync_to_user: all
+  playlist_exclude_user:
+  playlist_report: false
+  verify_ssl: true
+  custom_repo:
+  check_nightly: true
+  show_unconfigured: true
+#webhooks:                        # This is a webhook for notifiarr.  
+  #error: notifiarr
+  #version: notifiarr
+  #run_start: notifiarr
+  #run_end: notifiarr
+  #changes: notifiarr
+  #delete: notifiarr
+  playlist_exclude_users:
+  run_order:
+  - operations
+  - collections
+  - metadata
+  - overlays
+plex:                            # Can be individually specified per library as well; REQUIRED for the script to run
+  url: http://127.0.0.1:32400    #fill in your IP address here ex 192.168.1.2 or 127.0.0.2 or whatever ip you use to access plex locally. 
+  token: xxxxxxxxxxxxxxxxxxxxxxxxxx
+  timeout: 60
+  clean_bundles: true
+  empty_trash: true
+  optimize: false
+#notifiarr:
+  #apikey: xxxxxxxxxxxxxxxxxxxxxxxxxx
+  #db_cache:
+  db_cache:
+tmdb:                            # REQUIRED for the script to run you need to create an account on tmdb.com
+  apikey: xxxxxxxxxxxxxxxxxxxxxxxxxx
+  language: en
+  cache_expiration: 60
+  region:
+trakt:                           # Some collections (Star Trek) will pull from trakt and will require you to create an account 
+  client_id: xxxxxxxxxxxxxxxxxxxxxxxxxx
+  client_secret: xxxxxxxxxxxxxxxxxxxxxxxxxx
+  pin:
+  authorization:
+    # everything below is autofilled by the script
+    access_token: 
+    token_type: 
+    expires_in: 
+    refresh_token: 
+    scope: public
+    created_at: 
+mdblist:                         # REQUIRED for the script to run you need to create an account on mdblist.com, you can create an account with trakt and link it. 
+  apikey: 
+  cache_expiration: 60
+omdb:
+  apikey: 
+  cache_expiration: 60

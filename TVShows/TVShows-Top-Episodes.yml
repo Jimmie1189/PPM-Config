@@ -1,0 +1,68 @@
+#######################################################
+#                 Top Episodes                        #
+#                TV Collections                       #
+#######################################################
+templates:
+  episodes:
+    optional:
+      - show
+      - poster
+    tvdb_show: <<show>>
+    url_poster: <<poster>>
+    sync_mode: sync
+    schedule: yearly (02/01)
+    builder_level: episode
+    sort_title: "!018_<<collection_name>>"
+    collection_order: custom
+    summary: "A collection of the highest rated <<collection_name>> episodes."
+collections:
+
+   Top American Dad! Episodes:
+     template: {name: episodes}
+     plex_search:
+       type: episodes
+       sort_by: audience_rating.desc
+       limit: 100
+       all:
+         title.ends: "american dad!"
+   Top Comedy Central Presents Episodes:
+     template: {name: episodes}
+     plex_search:
+       type: episodes
+       sort_by: audience_rating.desc
+       limit: 100
+       all:
+         title.ends: "comedy central presents"
+   Top Family Guy Episodes:
+     template: {name: episodes}
+     plex_search:
+       type: episodes
+       sort_by: audience_rating.desc
+       limit: 100
+       all:
+         title.ends: "family guy"
+   Top South Park Episodes:
+     template: {name: episodes}
+     plex_search:
+       type: episodes
+       sort_by: audience_rating.desc
+       limit: 100
+       all:
+         title.ends: "south park"
+   Top The Office Episodes:
+     template: {name: episodes}
+     plex_search:
+       type: episodes
+       sort_by: audience_rating.desc
+       limit: 100
+       all:
+         title.ends: "the office"
+         year: 2005
+   Top The Simpsons Episodes:
+     template: {name: episodes}
+     plex_search:
+       type: episodes
+       sort_by: audience_rating.desc
+       limit: 100
+       all:
+         title.ends: "the simpsons"
